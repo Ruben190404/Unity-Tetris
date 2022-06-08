@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Mime;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
@@ -13,7 +15,10 @@ public class Board : MonoBehaviour
     public TetrominoData[] tetrominoes;
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
+    public int clearedlines = 0;
+    public int linevalue = 240;
 
+    [SerializeField] private Text Points;
     public RectInt Bounds
     {
         get
@@ -36,7 +41,10 @@ public class Board : MonoBehaviour
     private void Start()
     {
         SpawnPiece();
+        
+        Points.text = "Points: " + clearedlines * linevalue;
     }
+    
 
     public void SpawnPiece()
     {
@@ -52,6 +60,8 @@ public class Board : MonoBehaviour
         else
         {
             GameOver();
+            clearedlines = 0;
+            Points.text = "Points: " + 0;
         }
         Set(this.activePiece);
     }
@@ -59,6 +69,7 @@ public class Board : MonoBehaviour
     private void GameOver()
     {
         this.tilemap.ClearAllTiles();
+        
     }
     
     public void Set(Piece piece)
@@ -111,6 +122,8 @@ public class Board : MonoBehaviour
             if (IsLineFull(row))
             {
                 LineClear(row);
+                clearedlines++;
+                Points.text = "Points: " + clearedlines * linevalue;
             }
             else
             {
